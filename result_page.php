@@ -1,0 +1,1 @@
+<?php header('Location: result.php'); exit;

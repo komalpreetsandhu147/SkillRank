@@ -1,0 +1,7 @@
+<?php
+require_once __DIR__ . '/auth.php';
+require_login('admin');
+if (isset($_GET['delete'])) { query('DELETE FROM questions WHERE id=?', 'i', [(int)$_GET['delete']]); redirect('questions.php'); }
+$questions = many('SELECT q.*,s.name subject,t.name topic FROM questions q JOIN subjects s ON s.id=q.subject_id JOIN topics t ON t.id=q.topic_id ORDER BY q.created_at DESC');
+$pageTitle = 'Question bank'; include 'includes/header.php';
+?><div class="page-head"><div><div class="eyebrow">Content management</div><h1>Question bank.</h1><p>Curate the prompts that shape student growth.</p></div><a class="button button-primary" href="question_form.php">Add question <span>↗</span></a></div><section class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Question</th><th>Subject / topic</th><th>Level</th><th>Marks</th><th>Actions</th></tr></thead><tbody><?php foreach($questions as $question):?><tr><td style="max-width:380px;white-space:normal"><strong><?=e($question['question'])?></strong></td><td><?=e($question['subject'])?><small style="display:block;color:var(--muted)"><?=e($question['topic'])?></small></td><td><span class="pill"><?=e($question['difficulty'])?></span></td><td><?=$question['marks']?></td><td><a class="text-link" href="question_form.php?id=<?=$question['id']?>">Edit</a> <a class="text-link" style="color:#a64123" href="questions.php?delete=<?=$question['id']?>" onclick="return confirm('Delete this question?')">Delete</a></td></tr><?php endforeach;?></tbody></table></div></section><?php include 'includes/footer.php';?>
