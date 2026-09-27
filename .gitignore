@@ -1,0 +1,10 @@
+# Session and temporary test artifacts
+cookies.txt
+admin_cookies.txt
+*.log
+
+# OS & IDE metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
