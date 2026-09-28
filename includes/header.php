@@ -30,7 +30,8 @@ $active = basename($_SERVER['PHP_SELF']);
 <span class="brand-mark">S</span>
 <span>skill<span>rank</span></span>
 </a>
-<div class="profile-mini">
+<div class="profile-mini" style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:10px">
 <div class="avatar">
 <?= strtoupper(substr($user['name'], 0, 1)) ?>
 </div>
@@ -38,6 +39,10 @@ $active = basename($_SERVER['PHP_SELF']);
 <strong><?= e($user['name']) ?></strong>
 <small><?= ucfirst($user['role']) ?> account</small>
 </div>
+</div>
+<a href="logout.php" title="Sign out / Log out" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;background:var(--paper);border:1px solid var(--line);color:var(--muted);text-decoration:none;transition:0.2s all" onmouseover="this.style.color='#d88b62';this.style.borderColor='#d88b62'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--line)'">
+↪
+</a>
 </div>
 <nav>
 <small class="nav-label">Workspace</small>

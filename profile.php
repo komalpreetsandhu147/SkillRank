@@ -36,8 +36,12 @@ include 'includes/header.php';
 <div class="eyebrow">Student Identity</div>
 <h1>Profile & Career Readiness</h1>
 <p>Keep your academic credentials and verified skill proofs up-to-date for campus placements.</p>
-</div>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
 <a class="button button-quiet" href="resume.php">View Generated Resume <span>↗</span></a>
+<a class="button button-quiet" href="logout.php" style="color:var(--orange);border:1px solid #ffd0c4;display:inline-flex;align-items:center;gap:6px">
+<span>↪</span> Sign Out / Log Out
+</a>
+</div>
 </div>
 
 <?php if($message): ?>
@@ -86,7 +90,10 @@ include 'includes/header.php';
 <textarea name="bio" rows="3" placeholder="Passionate computer science student focused on full-stack web engineering and database management."><?= e($student['bio'] ?? '') ?></textarea>
 </label>
 
-<button class="button button-primary" type="submit" style="align-self:start">Save Profile Changes ↗</button>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<button class="button button-primary" type="submit">Save Profile Changes ↗</button>
+<a href="logout.php" class="button button-quiet" style="color:var(--orange)">↪ Log Out</a>
+</div>
 </form>
 </section>
 

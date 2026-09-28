@@ -4,9 +4,10 @@ require_once __DIR__ . '/config.php';
 function db(): mysqli {
     static $connection;
     if (!$connection) {
-        $connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        $port = defined('DB_PORT') ? DB_PORT : 3306;
+        $connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, $port);
         if ($connection->connect_errno) {
-            die('Database connection failed. Import database.sql and confirm XAMPP MySQL is running.');
+            die('Database connection failed: ' . $connection->connect_error . '. Check DB host/port and confirm MySQL is running.');
         }
         $connection->set_charset('utf8mb4');
     }
