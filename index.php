@@ -22,7 +22,6 @@ if ($user) redirect($user['role'] === 'admin' ? 'admin_dashboard.php' : 'dashboa
 <nav>
 <a href="about.php">How It Works</a>
 <a href="login.php">Student Sign In</a>
-<a href="admin_login.php" style="color:var(--muted)">Admin Portal</a>
 <a class="button button-dark" href="register.php">Build Your Profile <span>↗</span></a>
 </nav>
 </header>
@@ -39,7 +38,7 @@ SkillRank helps university students assess their technical skills, identify weak
 
 <div class="hero-actions">
 <a class="button button-primary" href="register.php">Start Student Profile <span>↗</span></a>
-<a class="button button-quiet" href="login.php?demo=aarav">Instant Demo Student ⚡</a>
+<a class="button button-quiet" href="login.php">Student Sign In ↗</a>
 <a class="text-link" href="about.php">Learn How It Works <span>→</span></a>
 </div>
 
@@ -100,5 +99,8 @@ Ready for College Tech Fest Presentation <span>→</span>
 <small>Campus-wide leaderboard standings and print-ready skill-based resumes.</small>
 </div>
 </section>
+<footer style="text-align:center;padding:25px 20px;color:var(--muted);font-size:0.8rem;border-top:1px solid var(--line)">
+SkillRank © 2026 · Technical Assessment Platform · <a href="admin_login.php" style="color:var(--muted);text-decoration:underline">Faculty Access</a>
+</footer>
 </body>
 </html>

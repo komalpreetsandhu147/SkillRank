@@ -1,14 +1,27 @@
 <?php 
 require_once 'auth.php';
-if (current_user()) redirect('dashboard.php');
+
+$user = current_user();
+if ($user) {
+    if ($user['role'] === 'student') {
+        redirect('dashboard.php');
+    } else {
+        // Clear prior admin session to ensure clean single-role access
+        $_SESSION = [];
+        if (session_id()) session_destroy();
+        session_start();
+    }
+}
+
 $error = '';
 $notice = '';
 
-// Handle quick demo button
+// Handle single-click student demo access if requested
 if (isset($_GET['demo'])) {
     $demoEmail = $_GET['demo'] === 'meera' ? 'meera@skillrank.demo' : 'aarav@skillrank.demo';
     $found = one('SELECT * FROM users WHERE email=? AND role=\'student\'', 's', [$demoEmail]);
     if ($found) {
+        session_regenerate_id(true);
         $_SESSION['user_id'] = $found['id'];
         redirect('dashboard.php');
     }
@@ -20,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $found = $email ? one('SELECT * FROM users WHERE email=? AND role=\'student\'', 's', [$email]) : null;
     
     if ($found && password_verify($password, $found['password_hash'])) {
+        session_regenerate_id(true);
         $_SESSION['user_id'] = $found['id'];
         redirect('dashboard.php');
     }
@@ -46,25 +60,22 @@ include 'includes/header.php';
 <?php endif; ?>
 
 <form method="post" class="form-stack">
-<label>Email address
-<input type="email" name="email" required placeholder="aarav@skillrank.demo" value="<?= e($_POST['email'] ?? 'aarav@skillrank.demo') ?>">
+<label>Student Email Address
+<input type="email" name="email" required placeholder="student@university.edu" value="<?= e($_POST['email'] ?? '') ?>">
 </label>
 <label>Password
-<input type="password" name="password" required placeholder="demo123" value="demo123">
+<input type="password" name="password" required placeholder="Enter your password">
 </label>
-<button class="button button-primary full" type="submit">Sign in <span>↗</span></button>
+<button class="button button-primary full" type="submit">Sign in to Student Profile <span>↗</span></button>
 </form>
 
 <div style="margin-top:20px;padding:15px;background:#edf5f7;border-radius:10px;border:1px solid #d3e5ea">
-<small style="display:block;font-weight:700;color:var(--teal);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">⚡ Instant Demo Logins (Tech Fest):</small>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<a href="login.php?demo=aarav" class="button button-quiet" style="font-size:0.8rem;padding:7px 12px;flex:1;text-align:center">Student Aarav (Adv)</a>
-<a href="login.php?demo=meera" class="button button-quiet" style="font-size:0.8rem;padding:7px 12px;flex:1;text-align:center">Student Meera (Active)</a>
-</div>
+<small style="display:block;font-weight:700;color:var(--teal);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">⚡ Instant Demo Login:</small>
+<a href="login.php?demo=aarav" class="button button-quiet full" style="font-size:0.85rem;padding:9px 12px;text-align:center">Sign in as Demo Student (Aarav) ↗</a>
 </div>
 
 <p class="form-note" style="margin-top:20px">
-New student? <a href="register.php">Create your profile</a> · <a href="admin_login.php">Admin portal →</a>
+New student? <a href="register.php">Create your individual profile</a>
 </p>
 </div>
 <div class="auth-art">
