@@ -25,6 +25,11 @@ if ($user) redirect($user['role'] === 'admin' ? 'admin_dashboard.php' : 'dashboa
 <a class="button button-dark" href="register.php">Build Your Profile <span>↗</span></a>
 </nav>
 </header>
+<?php if (!db()): ?>
+<div style="background: rgba(239, 68, 68, 0.12); border-bottom: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 10px 20px; font-size: 0.85rem; text-align: center;">
+    <strong>Railway Notice:</strong> MySQL database is not connected yet. In your Railway dashboard, click <b>+ Create &rarr; Database &rarr; Add MySQL</b> to connect persistent storage.
+</div>
+<?php endif; ?>
 
 <section class="hero">
 <div class="hero-copy">

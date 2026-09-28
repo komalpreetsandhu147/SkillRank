@@ -4,6 +4,10 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 
 $mysqli = db();
+if (!$mysqli) {
+    echo "Notice: Skipping db_setup because database connection is not established.\n";
+    return;
+}
 
 echo "Beginning SkillRank database setup...\n";
 

@@ -12,9 +12,12 @@ if ($dbUrl = getenv('DATABASE_URL')) {
     if ($parsed) {
         $rawDbHost = $parsed['host'] ?? $rawDbHost;
         $rawDbPort = $parsed['port'] ?? $rawDbPort;
-        $rawDbUser = $parsed['user'] ?? $rawDbUser;
-        $rawDbPass = $parsed['pass'] ?? $rawDbPass;
-        $rawDbName = isset($parsed['path']) ? ltrim($parsed['path'], '/') : $rawDbName;
+        $rawDbUser = isset($parsed['user']) ? urldecode($parsed['user']) : $rawDbUser;
+        $rawDbPass = isset($parsed['pass']) ? urldecode($parsed['pass']) : $rawDbPass;
+        if (isset($parsed['path'])) {
+            $parsedName = ltrim($parsed['path'], '/');
+            if ($parsedName !== '') $rawDbName = $parsedName;
+        }
     }
 }
 
@@ -26,7 +29,6 @@ defined('DB_PASS') or define('DB_PASS', $rawDbPass);
 defined('APP_NAME') or define('APP_NAME', 'SkillRank');
 
 // Google Gemini API Key for Generative AI Features
-// Leave blank to run in fast smart algorithmic mode, or enter your key from Google AI Studio.
 defined('GEMINI_API_KEY') or define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: '');
 
 if (session_status() === PHP_SESSION_NONE) {

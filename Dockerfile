@@ -9,15 +9,16 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project code
+# Copy project files
 COPY . /var/www/html/
 
-# Copy and prepare entrypoint
+# Copy and configure entrypoint script with Unix LF line endings and executable permissions
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh && chmod 755 /usr/local/bin/docker-entrypoint.sh
 
-# Ensure www-data permissions
+# Ensure proper permissions for Apache web server
 RUN chown -R www-data:www-data /var/www/html
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Run through /bin/sh to guarantee cross-platform execution compatibility
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
