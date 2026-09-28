@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/auth.php';
 require_login('student');
-$user = current_user();
-$student = one('SELECT * FROM students WHERE user_id=?', 'i', [$user['id']]);
-$skills = many('SELECT sk.name, ss.score, ss.level FROM student_skills ss JOIN skills sk ON sk.id=ss.skill_id WHERE ss.user_id=? ORDER BY ss.score DESC', 'i', [$user['id']]);
+$currentUser = current_user();
+$uid = get_scoped_student_id();
+$user = ($uid === (int)$currentUser['id']) ? $currentUser : (one('SELECT * FROM users WHERE id=?', 'i', [$uid]) ?: $currentUser);
+$student = one('SELECT * FROM students WHERE user_id=?', 'i', [$uid]);
+$skills = many('SELECT sk.name, ss.score, ss.level FROM student_skills ss JOIN skills sk ON sk.id=ss.skill_id WHERE ss.user_id=? ORDER BY ss.score DESC', 'i', [$uid]);
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -16,15 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bio = trim($_POST['bio'] ?? '');
 
     if ($name && $university && $course && $semester) {
-        query('UPDATE users SET name=? WHERE id=?', 'si', [$name, $user['id']]);
+        query('UPDATE users SET name=? WHERE id=?', 'si', [$name, $uid]);
         query('INSERT INTO students (user_id, university, course, semester, phone, career_goal, bio) VALUES (?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE university=VALUES(university), course=VALUES(course), semester=VALUES(semester), phone=VALUES(phone), career_goal=VALUES(career_goal), bio=VALUES(bio)',
             'issssss',
-            [$user['id'], $university, $course, $semester, $phone, $career_goal, $bio]
+            [$uid, $university, $course, $semester, $phone, $career_goal, $bio]
         );
         $message = 'Profile updated successfully.';
-        $user = current_user();
-        $student = one('SELECT * FROM students WHERE user_id=?', 'i', [$user['id']]);
+        $user = ($uid === (int)$currentUser['id']) ? current_user(true) : one('SELECT * FROM users WHERE id=?', 'i', [$uid]);
+        $student = one('SELECT * FROM students WHERE user_id=?', 'i', [$uid]);
     }
 }
 

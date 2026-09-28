@@ -1,11 +1,17 @@
 <?php 
 require_once __DIR__ . '/auth.php'; 
 require_once __DIR__ . '/ai.php';
-require_login('admin');
+$currentUser = current_user();
+if (!$currentUser) {
+    redirect('login.php');
+}
 
-$id = (int)($_GET['id'] ?? 0);
+// Scoped ID: Admin can view any student report; Student can ONLY access their own report
+$id = get_scoped_student_id();
 $student = one('SELECT u.id, u.name, u.email, u.created_at as joined_date, s.* FROM users u JOIN students s ON s.user_id=u.id WHERE u.id=?', 'i', [$id]);
-if (!$student) redirect('students.php');
+if (!$student) {
+    redirect($currentUser['role'] === 'admin' ? 'students.php' : 'profile.php');
+}
 
 // Performance metrics
 $stats = one('SELECT COALESCE(SUM(questions_count),0) solved, COALESCE(SUM(score),0) points, COALESCE(ROUND(AVG(accuracy)),0) accuracy, COUNT(id) tests_taken FROM quiz_attempts WHERE user_id=?', 'i', [$id]);
@@ -31,8 +37,10 @@ include 'includes/header.php';
 <h1>Student Assessment Report</h1>
 <p>Comprehensive transcript of verified technical competencies, test attempts, and faculty recommendations.</p>
 </div>
-<div style="display:flex;gap:10px">
-<a class="button button-quiet" href="students.php">← Back to Directory</a>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<a class="button button-quiet" href="<?= $currentUser['role'] === 'admin' ? 'students.php' : 'profile.php' ?>">← Back</a>
+<a class="button button-quiet" href="resume.php?id=<?= $student['id'] ?>" target="_blank">View Resume ↗</a>
+<a class="button button-quiet" href="certificate.php?id=<?= $student['id'] ?>" target="_blank">View Certificate 📜</a>
 <button class="button button-primary" onclick="window.print()">Print Official Report <span>↓</span></button>
 </div>
 </div>

@@ -3,7 +3,9 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/ai.php';
 require_login('student');
 
-$uid = current_user()['id'];
+$currentUser = current_user();
+$uid = get_scoped_student_id();
+$studentUser = ($uid === (int)$currentUser['id']) ? $currentUser : (one('SELECT * FROM users WHERE id=?', 'i', [$uid]) ?: $currentUser);
 
 // Subject performance stats
 $subjectStats = many(

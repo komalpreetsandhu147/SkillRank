@@ -90,9 +90,17 @@ include 'includes/header.php';
 </span>
 </td>
 <td style="text-align:right">
-<a class="button button-quiet" style="padding:6px 12px;font-size:0.8rem" href="student_profile.php?id=<?= $st['id'] ?>">
-Student Report →
+<div style="display:inline-flex;gap:6px">
+<a class="button button-quiet" style="padding:6px 10px;font-size:0.78rem" href="student_profile.php?id=<?= $st['id'] ?>" title="View Academic Report">
+Report →
 </a>
+<a class="button button-quiet" style="padding:6px 10px;font-size:0.78rem" href="resume.php?id=<?= $st['id'] ?>" target="_blank" title="View Resume">
+Resume ↗
+</a>
+<a class="button button-quiet" style="padding:6px 10px;font-size:0.78rem" href="certificate.php?id=<?= $st['id'] ?>" target="_blank" title="View Certificate">
+Cert 📜
+</a>
+</div>
 </td>
 </tr>
 <?php endforeach; ?>

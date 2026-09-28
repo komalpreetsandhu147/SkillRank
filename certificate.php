@@ -4,7 +4,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/db.php';
 
 $currentUser = current_user();
-$targetUid = isset($_GET['id']) ? (int)$_GET['id'] : ($currentUser['id'] ?? 1);
+$targetUid = get_scoped_student_id();
 
 // If not logged in and requesting a certificate, allow public verification view
 $student = one(

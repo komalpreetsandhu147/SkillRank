@@ -3,10 +3,11 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/ai.php';
 require_login('student');
 
-$user = current_user();
-$uid = $user['id'];
+$currentUser = current_user();
+$uid = get_scoped_student_id();
 
-// Get student details
+// Fetch student profile being viewed
+$user = ($uid === (int)$currentUser['id']) ? $currentUser : (one('SELECT * FROM users WHERE id=?', 'i', [$uid]) ?: $currentUser);
 $student = one('SELECT * FROM students WHERE user_id=?', 'i', [$uid]);
 
 // Get verified skills
